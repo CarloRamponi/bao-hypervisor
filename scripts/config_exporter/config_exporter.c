@@ -5,6 +5,8 @@
 
 #include <config_exporter.h>
 #include <stdio.h>
+#include <getopt.h>
+#include <config.h>
 
 extern struct config config;
 
@@ -184,23 +186,31 @@ void dump_config(struct config *config, FILE *file) {
 }
 
 int main(int argc, char **argv) {
-
     FILE *file = stdout;
+    paddr_t load_address = 0;
 
-    if(argc > 1) {
-
-        if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
-            fprintf(stderr, "Usage: %s [output_file]\n", argv[0]);
-            return 0;
-        }
-
-        file = fopen(argv[1], "w");
-        if(file == NULL) {
-            fprintf(stderr, "Error opening file %s\n", argv[1]);
-            return 1;
+    int opt;
+    while ((opt = getopt(argc, argv, "o:a:")) != -1) {
+        switch (opt) {
+            case 'o':
+                file = fopen(optarg, "w");
+                if (file == NULL) {
+                    fprintf(stderr, "Error opening file %s\n", optarg);
+                    return 1;
+                }
+                break;
+            case 'a':
+                load_address = (paddr_t)strtoul(optarg, NULL, 0);
+                break;
+            default:
+                fprintf(stderr, "Usage: %s -o [output_file] -a [load_address]\n", argv[0]);
+                return 0;
         }
     }
 
+    // fprintf(stderr, "Load address: 0x%lx\n", load_address);
+
+    config_init(load_address);
     dump_config(&config, file);
     return 0;
 }

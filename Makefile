@@ -150,6 +150,8 @@ inc_dirs+=$(platform_build_dir)
 config_def_exporter_src:=$(scripts_dir)/config_exporter/config_exporter.c
 config_def_exporter_src+=$(scripts_dir)/config_exporter/ccan/json/json.c
 config_def_exporter_src+=$(scripts_dir)/config_exporter/json_typed.c
+config_def_exporter_src+=$(core_dir)/config.c
+
 config_def_exporter:=$(scripts_build_dir)/config_exporter
 config_def_exporter_inc:= $(scripts_dir)/config_exporter/
 
