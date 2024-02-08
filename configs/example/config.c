@@ -10,8 +10,8 @@
  * Declare VM images using the VM_IMAGE macro, passing an identifier and the
  * path for the image.
  */
-VM_IMAGE(vm1, "/path/to/vm1/binary.bin");
-VM_IMAGE(vm2, "/path/to/vm2/binary.bin");
+VM_IMAGE(vm1, "/home/carlo/Repos/BAO/bao-helloworld/baremetal/build/qemu-riscv64-virt/baremetal.bin");
+VM_IMAGE(vm2, "/home/carlo/Repos/BAO/bao-helloworld/baremetal/build/qemu-riscv64-virt/baremetal.bin");
 
 /**
  * The configuration itself is a struct config that MUST be named config.
@@ -90,10 +90,10 @@ struct config config = {
                 },
 
                 .arch = {
-                    .gic = {
-                        .gicc_addr = 0x2C000000,
-                        .gicd_addr = 0x2F000000
-                    }
+                    // .gic = {
+                    //     .gicc_addr = 0x2C000000,
+                    //     .gicd_addr = 0x2F000000
+                    // }
                 }
             },
 
@@ -155,10 +155,10 @@ struct config config = {
                 },
 
                 .arch = {
-                    .gic = {
-                        .gicc_addr = 0x2C000000,
-                        .gicd_addr = 0x2F000000
-                    }
+                    // .gic = {
+                    //     .gicc_addr = 0x2C000000,
+                    //     .gicd_addr = 0x2F000000
+                    // }
                 }
             },
         },

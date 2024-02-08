@@ -47,7 +47,7 @@ scripts_dir:=$(cur_dir)/scripts
 ci_dir:=$(cur_dir)/ci
 src_dirs:=
 
-include $(ci_dir)/ci.mk
+#include $(ci_dir)/ci.mk
 
 targets:=$(MAKECMDGOALS)
 ifeq ($(targets),)
@@ -146,6 +146,12 @@ platform_defs:=$(platform_build_dir)/platform_defs_gen.h
 platform_description:=$(platform_dir)/$(platform_description)
 gens+=$(platform_defs) $(platform_def_generator)
 inc_dirs+=$(platform_build_dir)
+
+config_def_exporter_src:=$(scripts_dir)/config_exporter/config_exporter.c
+config_def_exporter_src+=$(scripts_dir)/config_exporter/ccan/json/json.c
+config_def_exporter_src+=$(scripts_dir)/config_exporter/json_typed.c
+config_def_exporter:=$(scripts_build_dir)/config_exporter
+config_def_exporter_inc:= $(scripts_dir)/config_exporter/
 
 # Setup list of objects for compilation
 -include $(addsuffix /objects.mk, $(src_dirs))
@@ -285,6 +291,11 @@ $(platform_defs): $(platform_def_generator)
 	@$(platform_def_generator) > $(platform_defs)
 
 
+# generate config_exporter
+config-exporter: $(config_def_exporter_src) $(config_src)
+	@echo "Compiling config exporter $(patsubst $(cur_dir)/%, %, $(config_def_exporter))"
+	@$(HOST_CC) $^ $(build_macros) $(CPPFLAGS) $(addprefix -I, $(inc_dirs)) -I $(config_def_exporter_inc) -o $(config_def_exporter)
+
 #Generate directories for object, dependency and generated files
 
 .SECONDEXPANSION:
@@ -294,7 +305,6 @@ $(objs-y) $(deps) $(targets-y) $(gens): | $$(@D)
 $(directories):
 	@echo "Creating directory	$(patsubst $(cur_dir)/%, %, $@)"
 	@mkdir -p $@
-
 endif
 
 # Count lines of code for the exact target platform and configuration
