@@ -24,7 +24,8 @@ struct JsonNode *config_to_json(struct config *config);
  * 
  * @param config The Config struct to dump.
  * @param path The path to the file to dump to.
+ * @param minimize Whether to minimize the JSON output.
  */
-void dump_config(struct config *config, FILE *file);
+void dump_config(struct config *config, FILE *file, bool minimize);
 
 #endif //__DUMP_H__

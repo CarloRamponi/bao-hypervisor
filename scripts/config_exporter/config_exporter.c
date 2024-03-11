@@ -179,9 +179,9 @@ struct JsonNode *config_to_json(struct config *config) {
     return json;
 }
 
-void dump_config(struct config *config, FILE *file) {
+void dump_config(struct config *config, FILE *file, bool minimize) {
     struct JsonNode *json = json_typed_object("config", config_to_json(config));
-    const char *json_str = json_stringify(json, "\t");
+    const char *json_str = json_stringify(json, minimize ? NULL : "\t");
     fprintf(file, "%s\n", json_str);
 }
 
@@ -189,8 +189,9 @@ int main(int argc, char **argv) {
     FILE *file = stdout;
     paddr_t load_address = 0;
 
+    bool minimize = false;
     int opt;
-    while ((opt = getopt(argc, argv, "o:a:")) != -1) {
+    while ((opt = getopt(argc, argv, "o:a:m")) != -1) {
         switch (opt) {
             case 'o':
                 file = fopen(optarg, "w");
@@ -202,8 +203,11 @@ int main(int argc, char **argv) {
             case 'a':
                 load_address = (paddr_t)strtoul(optarg, NULL, 0);
                 break;
+            case 'm':
+                minimize = true;
+                break;
             default:
-                fprintf(stderr, "Usage: %s -o [output_file] -a [load_address]\n", argv[0]);
+                fprintf(stderr, "Usage: %s -o [output_file] -a [load_address] [-m]\n", argv[0]);
                 return 0;
         }
     }
@@ -211,6 +215,6 @@ int main(int argc, char **argv) {
     // fprintf(stderr, "Load address: 0x%lx\n", load_address);
 
     config_init(load_address);
-    dump_config(&config, file);
+    dump_config(&config, file, minimize);
     return 0;
 }
