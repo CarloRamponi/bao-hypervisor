@@ -151,9 +151,11 @@ config_def_exporter_src:=$(scripts_dir)/config_exporter/config_exporter.c
 config_def_exporter_src+=$(scripts_dir)/config_exporter/ccan/json/json.c
 config_def_exporter_src+=$(scripts_dir)/config_exporter/json_typed.c
 config_def_exporter_src+=$(core_dir)/config.c
+config_def_exporter_src+=$(scripts_dir)/config_exporter/arch/$(ARCH)/arch_config_exporter.c
 
 config_def_exporter:=$(scripts_build_dir)/config_exporter
 config_def_exporter_inc:= $(scripts_dir)/config_exporter/
+config_def_exporter_inc+=$(scripts_dir)/config_exporter/arch/
 
 # Setup list of objects for compilation
 -include $(addsuffix /objects.mk, $(src_dirs))
@@ -296,7 +298,7 @@ $(platform_defs): $(platform_def_generator)
 # generate config_exporter
 config-exporter: $(config_def_exporter_src) $(config_src)
 	@echo "Compiling config exporter $(patsubst $(cur_dir)/%, %, $(config_def_exporter))"
-	@$(HOST_CC) $^ $(build_macros) $(CPPFLAGS) $(addprefix -I, $(inc_dirs)) -I $(config_def_exporter_inc) -o $(config_def_exporter)
+	@$(HOST_CC) $^ $(build_macros) $(CPPFLAGS) $(addprefix -I, $(inc_dirs)) $(addprefix -I, $(config_def_exporter_inc)) -o $(config_def_exporter)
 
 #Generate directories for object, dependency and generated files
 

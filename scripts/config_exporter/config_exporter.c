@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <config.h>
+#include <json_typed.h>
+#include <arch_config_exporter.h>
 
 extern struct config config;
 
@@ -65,22 +67,6 @@ struct JsonNode *vm_dev_region_to_json(struct vm_dev_region *region) {
     }
     json_append_member(json, "interrupts", interrupts);
     json_append_member(json, "id", json_typed_number("int", region->id));
-    return json;
-}
-
-struct JsonNode *arch_vm_platform_to_json(struct arch_vm_platform *platform) {
-    struct JsonNode *json = json_mkobject();
-    struct JsonNode *irqc = json_mkobject();
-    struct JsonNode *plic = json_mkobject();
-    json_append_member(plic, "base", json_typed_number("paddr_t", platform->irqc.plic.base));
-    json_append_member(irqc, "plic", json_typed_object("anonymous struct", plic));
-
-    struct JsonNode *aia = json_mkobject();
-    struct JsonNode *aplic = json_mkobject();
-    json_append_member(aplic, "base", json_typed_number("paddr_t", platform->irqc.aia.aplic.base));
-    json_append_member(aia, "aplic", json_typed_object("anonymous struct", aplic));
-    json_append_member(irqc, "aia", json_typed_object("anonymous struct", aia));
-    json_append_member(json, "irqc", json_typed_object("vm_irqc_dscrp", irqc));
     return json;
 }
 

@@ -8,7 +8,6 @@
 
 #include <config.h>
 #include <ccan/json/json.h>
-#include <json_typed.h>
 #include <stdio.h>
 
 /**
